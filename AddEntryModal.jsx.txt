@@ -1,0 +1,40 @@
+import { C } from '../../lib/theme';
+import { ANIME } from '../../lib/animeData';
+
+export default function AddEntryModal({ selectedAnime, setSelectedAnime, note, setNote, onSave, onClose }) {
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(16px)', zIndex: 200, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: '0 0 20px' }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#111', border: `1px solid ${C.border}`, borderRadius: 24, width: '100%', maxWidth: 520, padding: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: C.white }}>New Journal Entry</div>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: C.muted, fontSize: 20, cursor: 'pointer' }}>×</button>
+        </div>
+
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.muted, textTransform: 'uppercase', marginBottom: 10 }}>Anime</div>
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }} className="no-scrollbar">
+            {ANIME.map(a => (
+              <button key={a.id} onClick={() => setSelectedAnime(a)} style={{
+                flexShrink: 0, padding: '6px 14px', borderRadius: 50,
+                border: `1.5px solid ${selectedAnime?.id === a.id ? C.orange : C.border}`,
+                background: selectedAnime?.id === a.id ? C.white : 'transparent',
+                color: selectedAnime?.id === a.id ? C.orange : C.muted,
+                fontWeight: 700, fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+              }}>{a.title.split(':')[0]}</button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.muted, textTransform: 'uppercase', marginBottom: 10 }}>Your thoughts</div>
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="What stood out? Any moments that hit different?" rows={4}
+            style={{ width: '100%', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 14, color: C.white, fontSize: 13, fontFamily: 'inherit', outline: 'none', resize: 'none', lineHeight: 1.6 }} />
+        </div>
+
+        <button onClick={onSave} style={{ width: '100%', background: C.white, color: C.orange, border: `1.5px solid ${C.orange}`, borderRadius: 50, padding: 14, fontWeight: 800, fontSize: 14, cursor: 'pointer' }}>
+          Save Entry
+        </button>
+      </div>
+    </div>
+  );
+}

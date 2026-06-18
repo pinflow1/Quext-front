@@ -1,0 +1,25 @@
+import PlatformIcons from './PlatformIcons';
+import Dots from './Dots';
+
+export default function PlatformsSlide({ onNext }) {
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <PlatformIcons />
+
+      <div style={{ paddingTop: 24 }}>
+        <p style={{ fontSize: 28, fontWeight: 800, color: '#fff', letterSpacing: -0.9, lineHeight: 1.15, margin: '0 0 10px' }}>
+          Every platform,<br />one place.
+        </p>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.65, margin: '0 0 28px' }}>
+          Crunchyroll, Netflix, HiDive and more — always shown with every anime so you always know where to watch.
+        </p>
+        <Dots active={1} total={2} />
+        <button onClick={onNext} style={{
+          width: '100%', height: 54, background: '#fff', color: '#000',
+          border: 'none', borderRadius: 99, fontSize: 16, fontWeight: 700,
+          cursor: 'pointer', marginTop: 24,
+        }}>Get Started</button>
+      </div>
+    </div>
+  );
+}

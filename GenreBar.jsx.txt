@@ -1,0 +1,19 @@
+import { C } from '../../lib/theme';
+import { GENRES } from '../../lib/animeData';
+
+export default function GenreBar({ genre, setGenre }) {
+  return (
+    <div style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '0 20px', marginBottom: 24 }} className="no-scrollbar">
+      {GENRES.map(g => (
+        <button key={g} onClick={() => setGenre(g)} style={{
+          flexShrink: 0, padding: '7px 16px', borderRadius: 50,
+          border: `1.5px solid ${genre === g ? C.orange : C.border}`,
+          background: genre === g ? C.white : 'transparent',
+          color: genre === g ? C.orange : C.muted,
+          fontWeight: 700, fontSize: 12, cursor: 'pointer',
+          transition: 'all 0.2s', fontFamily: 'inherit',
+        }}>{g}</button>
+      ))}
+    </div>
+  );
+}
