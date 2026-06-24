@@ -1,0 +1,119 @@
+:root {
+  --bg: #0A0A0A;
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.02);
+  --hairline: rgba(255,255,255,0.1);
+  --text: #FFFFFF;
+  --text-70: rgba(255,255,255,0.7);
+  --text-65: rgba(255,255,255,0.65);
+  --text-60: rgba(255,255,255,0.6);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-faint: rgba(255,255,255,0.22);
+  --track: rgba(255,255,255,0.15);
+  --track-2: rgba(255,255,255,0.08);
+  --glass-bg: rgba(20,20,20,0.42);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-active: rgba(255,255,255,0.12);
+  --num-stroke: rgba(255,255,255,0.3);
+  --rank-faint: rgba(255,255,255,0.18);
+  --orange: #FF7A00;
+  --orange-tint: rgba(255,122,0,0.1);
+  --cyan: #5EEBFF;
+  --red: #FF4D4D;
+  --btn-text: #0A0A0A;
+  --hero-fade: rgba(10,10,10,0.55);
+  --scroll-thumb: #1c1c1c;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #FAFAF8;
+    --surface: rgba(10,10,10,0.04);
+    --surface-hover: rgba(10,10,10,0.03);
+    --hairline: rgba(10,10,10,0.12);
+    --text: #0A0A0A;
+    --text-70: rgba(10,10,10,0.72);
+    --text-65: rgba(10,10,10,0.65);
+    --text-60: rgba(10,10,10,0.6);
+    --text-dim: rgba(10,10,10,0.45);
+    --text-faint: rgba(10,10,10,0.32);
+    --track: rgba(10,10,10,0.12);
+    --track-2: rgba(10,10,10,0.08);
+    --glass-bg: rgba(255,255,255,0.5);
+    --glass-border: rgba(10,10,10,0.1);
+    --glass-active: rgba(10,10,10,0.08);
+    --num-stroke: rgba(10,10,10,0.35);
+    --rank-faint: rgba(10,10,10,0.18);
+    --orange: #FF7A00;
+    --orange-tint: rgba(255,122,0,0.12);
+    --cyan: #0099AD;
+    --red: #E0383D;
+    --btn-text: #0A0A0A;
+    --hero-fade: rgba(250,250,248,0.65);
+    --scroll-thumb: rgba(10,10,10,0.2);
+  }
+}
+
+/* Manual override applied via .theme-dark class on <html> when user forces dark in Settings */
+html.theme-dark {
+  --bg: #0A0A0A;
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.02);
+  --hairline: rgba(255,255,255,0.1);
+  --text: #FFFFFF;
+  --text-70: rgba(255,255,255,0.7);
+  --text-65: rgba(255,255,255,0.65);
+  --text-60: rgba(255,255,255,0.6);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-faint: rgba(255,255,255,0.22);
+  --track: rgba(255,255,255,0.15);
+  --track-2: rgba(255,255,255,0.08);
+  --glass-bg: rgba(20,20,20,0.42);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-active: rgba(255,255,255,0.12);
+  --num-stroke: rgba(255,255,255,0.3);
+  --rank-faint: rgba(255,255,255,0.18);
+  --cyan: #5EEBFF;
+  --red: #FF4D4D;
+  --hero-fade: rgba(10,10,10,0.55);
+  --scroll-thumb: #1c1c1c;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); overflow-x: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+button { font-family: inherit; }
+input, textarea { font-family: inherit; }
+input::placeholder, textarea::placeholder { color: rgba(128,128,128,0.5) !important; }
+
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Resume / primary CTA — rounded pill, inverts to white on tap */
+.btn-resume {
+  background: var(--orange);
+  color: var(--btn-text);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-resume:active { background: var(--text); color: var(--bg); transform: scale(0.97); }
+
+/* Nav pills — subtle press feedback */
+.nav-pill { -webkit-tap-highlight-color: transparent; }
+.nav-pill:active { transform: scale(0.95); background: var(--glass-active) !important; }
+
+/* Danger button (Log Out) — fills red on tap */
+.btn-danger { transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease; -webkit-tap-highlight-color: transparent; }
+.btn-danger:active { background: var(--red) !important; color: #FFFFFF !important; transform: scale(0.97); }
+
+@media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .editorial-row { flex-direction: column !important; }
+  .editorial-image { flex: none !important; width: 100% !important; aspect-ratio: 16/9 !important; }
+}
+@media (min-width: 769px) {
+  .mobile-only { display: none !important; }
+}
