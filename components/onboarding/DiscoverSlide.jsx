@@ -1,11 +1,9 @@
-import CardStack from './CardStack';
 import Dots from './Dots';
 
 export default function DiscoverSlide({ onNext }) {
   return (
-    <div style={{ flex:1, display:'flex', flexDirection:'column' }}>
-      <CardStack/>
-      <div style={{ paddingTop:24, position:'relative', zIndex:10 }}>
+    <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
+      <div style={{ paddingTop:24 }}>
         <p style={{ fontSize:28, fontWeight:800, color:'#fff', letterSpacing:'-0.02em', lineHeight:1.15, margin:'0 0 10px', fontFamily:"'Plus Jakarta Sans',sans-serif" }}>
           Discover anime<br/>without the noise
         </p>
