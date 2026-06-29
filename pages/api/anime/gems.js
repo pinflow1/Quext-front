@@ -27,9 +27,9 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Filter to genuinely less popular titles (popularity rank > 500)
+    // Filter to genuinely less popular titles (popularity rank > 200)
     const gems = data.data
-      .filter(a => a.popularity > 500 && a.synopsis)
+      .filter(a => a.popularity > 200 && a.synopsis)
       .slice(0, 4)
       .map(a => ({
         mal_id:    a.mal_id,
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
         byline:    '— curated by the Quext team',
       }));
 
-    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=3600');
+    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
     return res.status(200).json({ gems });
 
   } catch (err) {
