@@ -6,6 +6,7 @@ export default function AddEntryModal({ onClose, onSave }) {
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState(null);
   const [note, setNote] = useState('');
+  const [episode, setEpisode] = useState('');
   const [searching, setSearching] = useState(false);
   const debounce = useRef(null);
 
@@ -25,11 +26,12 @@ export default function AddEntryModal({ onClose, onSave }) {
   const handleSave = () => {
     if (!selected || !note.trim()) return;
     onSave({
-      anime_mal_id:   selected.mal_id,
-      anime_title:    selected.title,
+      anime_mal_id:    selected.mal_id,
+      anime_title:     selected.title,
       anime_image_url: selected.image_url || null,
-      note:           note.trim(),
-      tag:            selected.genres?.[0] || null,
+      note:            note.trim(),
+      tag:             selected.genres?.[0] || null,
+      episode:         episode ? Number(episode) : null,
     });
   };
 
@@ -76,11 +78,19 @@ export default function AddEntryModal({ onClose, onSave }) {
           )}
         </div>
 
-        {/* Note */}
+        {/* Note + Episode */}
         <div style={{ marginBottom:24 }}>
           <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, letterSpacing:2, color:'var(--text-dim)', textTransform:'uppercase', marginBottom:10 }}>Your thoughts</div>
           <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="What stood out? Any moments that hit different?" rows={3}
-            style={{ width:'100%', background:'transparent', border:'none', borderBottom:'1px solid var(--hairline)', padding:'0 0 12px', color:'var(--text)', fontSize:14, fontFamily:'Inter,sans-serif', outline:'none', resize:'none', lineHeight:1.7 }}/>
+            style={{ width:'100%', background:'transparent', border:'none', borderBottom:'1px solid var(--hairline)', padding:'0 0 12px', color:'var(--text)', fontSize:14, fontFamily:'Inter,sans-serif', outline:'none', resize:'none', lineHeight:1.7, marginBottom:14 }}/>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, letterSpacing:2, color:'var(--text-dim)', textTransform:'uppercase', flexShrink:0 }}>Episode</div>
+            <input
+              type="number" min="1" placeholder="e.g. 14"
+              value={episode} onChange={e => setEpisode(e.target.value)}
+              style={{ width:80, background:'transparent', border:'none', borderBottom:'1px solid var(--hairline)', padding:'4px 0', color:'var(--text)', fontSize:13, fontFamily:"'IBM Plex Mono',monospace", outline:'none', textAlign:'center' }}
+            />
+          </div>
         </div>
 
         <button onClick={handleSave} disabled={!selected || !note.trim()} className="btn-resume" style={{ width:'100%', border:'none', borderRadius:50, padding:14, fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:14, cursor: selected && note.trim() ? 'pointer' : 'not-allowed', opacity: selected && note.trim() ? 1 : 0.5 }}>
@@ -89,5 +99,4 @@ export default function AddEntryModal({ onClose, onSave }) {
       </div>
     </div>
   );
-                       }
-                                                      
+}
