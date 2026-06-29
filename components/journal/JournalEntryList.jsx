@@ -21,7 +21,6 @@ export default function JournalEntryList({ grouped, isEmpty, isLive, onDelete })
             <JournalEntryRow
               key={e.id}
               entry={e}
-              anime={null}
               onDelete={onDelete}
             />
           ))}
