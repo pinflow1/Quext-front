@@ -1,8 +1,14 @@
 import { PAD } from '../../lib/theme';
 import { PROFILE_USER } from '../../lib/profileData';
+import useJournal from '../../lib/useJournal';
 import { JOURNAL_ENTRIES, JOURNAL_ANIME } from '../../lib/journalData';
 
 export default function ProfileHeader({ isGuest, onOpenLogin }) {
+  const { entries: liveEntries, session } = useJournal();
+  const isLive = !!session;
+  const entries = isLive ? liveEntries : JOURNAL_ENTRIES;
+  const trackedShows = new Set(entries.map(e => e.anime_mal_id || e.animeId)).size;
+
   return (
     <div style={{ padding:`0 ${PAD} 28px` }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
@@ -17,7 +23,7 @@ export default function ProfileHeader({ isGuest, onOpenLogin }) {
         )}
       </div>
       <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, letterSpacing:1, color:'var(--text-dim)' }}>
-        {JOURNAL_ENTRIES.length} ENTRIES LOGGED · {JOURNAL_ANIME.length} SHOWS TRACKED
+        {entries.length} ENTRIES LOGGED · {trackedShows} SHOWS TRACKED
       </div>
 
       {isGuest && (
