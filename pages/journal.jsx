@@ -15,9 +15,18 @@ export default function Journal() {
   const [activeTag, setActiveTag] = useState('All');
   const [adding, setAdding] = useState(false);
 
-  // Guests see static seed data; signed-in users see real Supabase entries
   const isLive = !!session;
-  const rawEntries = isLive ? liveEntries : JOURNAL_ENTRIES;
+
+  // Normalize — ensures anime_title and tag are always present
+  // whether entry is from Supabase (has anime_title) or static seed (has animeId)
+  const normalize = e => ({
+    ...e,
+    anime_title:     e.anime_title || animeById(e.animeId)?.title || '—',
+    tag:             e.tag         || animeById(e.animeId)?.tag   || '',
+    anime_image_url: e.anime_image_url || null,
+  });
+
+  const rawEntries = (isLive ? liveEntries : JOURNAL_ENTRIES).map(normalize);
 
   const animeById = id => JOURNAL_ANIME.find(a => a.id === id);
 
@@ -68,4 +77,4 @@ export default function Journal() {
       )}
     </Layout>
   );
-}
+          }
