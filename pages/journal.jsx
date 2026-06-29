@@ -10,7 +10,7 @@ import useJournal from '../lib/useJournal';
 import { JOURNAL_ENTRIES, JOURNAL_ANIME } from '../lib/journalData';
 
 export default function Journal() {
-  const { entries: liveEntries, loading, session, addEntry, deleteEntry } = useJournal();
+  const { entries: liveEntries, loading, session, saveError, addEntry, deleteEntry } = useJournal();
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState('All');
   const [adding, setAdding] = useState(false);
@@ -54,6 +54,11 @@ export default function Journal() {
       {!loading && (
         <>
           <PageHeader eyebrow="Your Anime Journey" title="Journal" meta={`${rawEntries.length} ENTRIES · TRACKING ${trackedShows} SHOWS`}/>
+          {saveError && (
+            <div style={{ margin:'0 32px 16px', padding:'12px 16px', background:'rgba(255,77,77,0.08)', border:'1px solid var(--red)', borderRadius:10, fontFamily:'Inter,sans-serif', fontSize:12, color:'var(--red)' }}>
+              Save failed: {saveError}
+            </div>
+          )}
           <JournalSearch search={search} setSearch={setSearch}/>
           <JournalTagFilter tags={tags} activeTag={activeTag} setActiveTag={setActiveTag}/>
           <JournalEntryList grouped={grouped} isEmpty={filtered.length === 0} isLive={isLive} onDelete={isLive ? deleteEntry : null}/>
