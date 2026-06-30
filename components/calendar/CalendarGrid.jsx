@@ -1,8 +1,9 @@
 import { PAD } from '../../lib/theme';
-import { CALENDAR_DAYS, CALENDAR_TODAY, CALENDAR_EVENTS } from '../../lib/calendarData';
+import { CALENDAR_DAYS } from '../../lib/calendarData';
 import { STATUS_COLOR } from '../../lib/animeData';
 
-export default function CalendarGrid({ cells, onSelectDay }) {
+// events: { [day]: { title, status, platform } } — keyed by day-of-month
+export default function CalendarGrid({ cells, events, today, onSelectDay }) {
   return (
     <div style={{ padding:`0 ${PAD}`, marginBottom:40 }}>
       <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', marginBottom:4 }}>
@@ -12,8 +13,8 @@ export default function CalendarGrid({ cells, onSelectDay }) {
       </div>
       <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', borderTop:'1px solid var(--hairline)', borderLeft:'1px solid var(--hairline)' }}>
         {cells.map((day, i) => {
-          const event = day && CALENDAR_EVENTS[day];
-          const isToday = day === CALENDAR_TODAY;
+          const event = day && events[day];
+          const isToday = day === today;
           return (
             <div key={i} onClick={() => event && onSelectDay({ day, ...event })} style={{
               aspectRatio:'1', borderRight:'1px solid var(--hairline)', borderBottom:'1px solid var(--hairline)',
