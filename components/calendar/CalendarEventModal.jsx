@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { PAD } from '../../lib/theme';
 import { STATUS_COLOR } from '../../lib/animeData';
 
-export default function CalendarEventModal({ event, onClose, onAddToCalendar }) {
+export default function CalendarEventModal({ event, onClose, onAddToCalendar, monthLabel, syncing, syncResult }) {
   if (!event) return null;
   const color = STATUS_COLOR[event.status];
+
   return (
     <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', backdropFilter:'blur(12px)', zIndex:200, display:'flex', alignItems:'flex-end', justifyContent:'center' }}>
       <div onClick={e => e.stopPropagation()} style={{
@@ -17,11 +19,19 @@ export default function CalendarEventModal({ event, onClose, onAddToCalendar }) 
           </div>
           <button onClick={onClose} style={{ background:'none', border:'none', color:'var(--text-dim)', fontSize:22, cursor:'pointer', lineHeight:1 }}>×</button>
         </div>
-        <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, color:'var(--text-dim)', marginBottom:24 }}>June {event.day}, 2026</div>
-        <button onClick={() => onAddToCalendar(event)} className="btn-resume" style={{
+        <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, color:'var(--text-dim)', marginBottom:24 }}>{monthLabel} {event.day}, 2026</div>
+
+        {syncResult?.error && (
+          <div style={{ marginBottom:14, padding:'10px 14px', background:'rgba(255,77,77,0.08)', border:'1px solid var(--red)', borderRadius:10, fontFamily:'Inter,sans-serif', fontSize:12, color:'var(--red)' }}>{syncResult.error}</div>
+        )}
+        {syncResult?.success && (
+          <div style={{ marginBottom:14, padding:'10px 14px', background:'rgba(94,235,255,0.08)', border:'1px solid var(--cyan)', borderRadius:10, fontFamily:'Inter,sans-serif', fontSize:12, color:'var(--cyan)' }}>Added to Google Calendar ✓</div>
+        )}
+
+        <button onClick={() => onAddToCalendar(event)} disabled={syncing} className="btn-resume" style={{
           width:'100%', border:'none', borderRadius:50, padding:14,
-          fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:14, cursor:'pointer',
-        }}>Add to Google Calendar</button>
+          fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:14, cursor: syncing ? 'not-allowed' : 'pointer', opacity: syncing ? 0.6 : 1,
+        }}>{syncing ? 'Adding...' : 'Add to Google Calendar'}</button>
       </div>
     </div>
   );
