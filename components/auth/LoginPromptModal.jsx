@@ -63,7 +63,13 @@ export default function LoginPromptModal({ onClose, onSignIn }) {
               <span style={{ fontFamily:'Inter,sans-serif', fontSize:11, color:'var(--text-faint)', fontWeight:600 }}>or</span>
               <div style={{ flex:1, height:1, background:'var(--hairline)' }}/>
             </div>
-            <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="Email address" onKeyDown={e => e.key==='Enter' && handleEmail()} style={{ display:'block', width:'100%', background:'var(--surface)', border:'1px solid var(--hairline)', borderRadius:14, padding:'14px 16px', color:'var(--text)', fontSize:14, outline:'none', marginBottom:12 }}/>
+            <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="Email address" onKeyDown={e => e.key==='Enter' && handleEmail()} style={{ display:'block', width:'100%', background:'var(--surface)', border:'1px solid var(--hairline)', borderRadius:14, padding:'14px 16px', color:'var(--text)', fontSize:14, outline:'none', marginBottom:10 }}/>
+            <div style={{ display:'flex', alignItems:'flex-start', gap:7, marginBottom:14 }}>
+              <span style={{ width:4, height:4, borderRadius:50, background:'var(--cyan)', flexShrink:0, marginTop:5 }}/>
+              <p style={{ fontFamily:'Inter,sans-serif', fontSize:11, color:'var(--text-faint)', lineHeight:1.5, margin:0 }}>
+                Email sign-in won't support Google Calendar sync — use Google above if you want season alerts added directly to your calendar.
+              </p>
+            </div>
             <button onClick={handleEmail} disabled={loading} className="btn-resume" style={{ width:'100%', border:'none', borderRadius:14, padding:14, fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:14, cursor:loading?'not-allowed':'pointer', marginBottom:18, opacity:loading?0.7:1 }}>
               {loading ? 'Sending...' : 'Continue with email'}
             </button>
@@ -76,4 +82,5 @@ export default function LoginPromptModal({ onClose, onSignIn }) {
       </div>
     </div>
   );
-}
+      }
+          
