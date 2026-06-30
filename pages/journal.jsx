@@ -16,6 +16,7 @@ export default function Journal() {
   const [adding, setAdding] = useState(false);
 
   const isLive = !!session;
+  const animeById = id => JOURNAL_ANIME.find(a => a.id === id);
 
   // Normalize — ensures anime_title and tag are always present
   // whether entry is from Supabase (has anime_title) or static seed (has animeId)
@@ -27,8 +28,6 @@ export default function Journal() {
   });
 
   const rawEntries = (isLive ? liveEntries : JOURNAL_ENTRIES).map(normalize);
-
-  const animeById = id => JOURNAL_ANIME.find(a => a.id === id);
 
   const filtered = rawEntries.filter(e => {
     const title = e.anime_title || animeById(e.animeId)?.title || '';
