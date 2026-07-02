@@ -1,7 +1,7 @@
 import { PAD } from '../../lib/theme';
 import { JOURNAL_ANIME } from '../../lib/journalData';
 
-export default function ProfileBanner({ onOpenSettings }) {
+export default function ProfileBanner({ onOpenSettings, avatarUrl, streak, isGuest }) {
   return (
     <div style={{ position:'relative', marginBottom:60 }}>
       <div style={{
@@ -23,23 +23,29 @@ export default function ProfileBanner({ onOpenSettings }) {
         </svg>
       </button>
 
-      <div style={{
-        position:'absolute', top:16, left:16, background:'var(--glass-bg)',
-        backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', border:'1px solid var(--glass-border)',
-        borderRadius:50, padding:'6px 14px', display:'flex', alignItems:'center', gap:6,
-      }}>
-        <span style={{ width:6, height:6, borderRadius:50, background:'var(--orange)' }}/>
-        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, fontWeight:600, color:'var(--text)' }}>7-DAY STREAK</span>
-      </div>
+      {!isGuest && streak > 0 && (
+        <div style={{
+          position:'absolute', top:16, left:16, background:'var(--glass-bg)',
+          backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', border:'1px solid var(--glass-border)',
+          borderRadius:50, padding:'6px 14px', display:'flex', alignItems:'center', gap:6,
+        }}>
+          <span style={{ width:6, height:6, borderRadius:50, background:'var(--orange)' }}/>
+          <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, fontWeight:600, color:'var(--text)' }}>{streak}-DAY STREAK</span>
+        </div>
+      )}
 
       <div style={{ position:'absolute', left:PAD, bottom:-44, width:88, height:88, borderRadius:50, padding:4, background:'var(--bg)' }}>
-        <div style={{ width:'100%', height:'100%', borderRadius:50, background:'linear-gradient(135deg, var(--orange), #2e1c08)', border:'2px solid var(--orange-tint)', position:'relative' }}>
-          <div style={{ position:'absolute', bottom:-2, right:-2, width:24, height:24, borderRadius:50, background:'var(--orange)', border:'3px solid var(--bg)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{width:11,height:11}}>
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+        {avatarUrl ? (
+          <img src={avatarUrl} alt="" style={{ width:'100%', height:'100%', borderRadius:50, objectFit:'cover', border:'2px solid var(--orange-tint)' }}/>
+        ) : (
+          <div style={{ width:'100%', height:'100%', borderRadius:50, background:'linear-gradient(135deg, var(--orange), #2e1c08)', border:'2px solid var(--orange-tint)', position:'relative' }}>
+            <div style={{ position:'absolute', bottom:-2, right:-2, width:24, height:24, borderRadius:50, background:'var(--orange)', border:'3px solid var(--bg)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{width:11,height:11}}>
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
