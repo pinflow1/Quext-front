@@ -26,10 +26,8 @@ export default function LoginPromptModal({ onClose, onSignIn }) {
   };
 
   return (
-    <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', backdropFilter:'blur(12px)', zIndex:300, display:'flex', alignItems:'flex-end', justifyContent:'center' }}>
+    <div onClick={onClose} style={{ position:'fixed', inset:0, background:'var(--bg)', zIndex:300, display:'flex', alignItems:'flex-end', justifyContent:'center' }}>
       <div onClick={e => e.stopPropagation()} style={{
-        background:'var(--bg)', borderTop:'1px solid var(--hairline)',
-        borderTopLeftRadius:24, borderTopRightRadius:24,
         width:'100%', maxWidth:560, padding:`28px ${PAD} 32px`,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
@@ -82,5 +80,4 @@ export default function LoginPromptModal({ onClose, onSignIn }) {
       </div>
     </div>
   );
-      }
-          
+                                                                                                                                                                             }
