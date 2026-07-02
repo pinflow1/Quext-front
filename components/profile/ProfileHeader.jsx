@@ -1,19 +1,11 @@
 import { PAD } from '../../lib/theme';
-import { PROFILE_USER } from '../../lib/profileData';
-import useJournal from '../../lib/useJournal';
-import { JOURNAL_ENTRIES, JOURNAL_ANIME } from '../../lib/journalData';
 
-export default function ProfileHeader({ isGuest, onOpenLogin }) {
-  const { entries: liveEntries, session } = useJournal();
-  const isLive = !!session;
-  const entries = isLive ? liveEntries : JOURNAL_ENTRIES;
-  const trackedShows = new Set(entries.map(e => e.anime_mal_id || e.animeId)).size;
-
+export default function ProfileHeader({ isGuest, onOpenLogin, name, joined, entryCount, trackedShows }) {
   return (
     <div style={{ padding:`0 ${PAD} 28px` }}>
-      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
         <span style={{ fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:700, letterSpacing:'-0.01em', fontSize:22, color:'var(--text)' }}>
-          {isGuest ? 'Guest' : PROFILE_USER.name}
+          {isGuest ? 'Guest' : name}
         </span>
         {!isGuest && (
           <svg viewBox="0 0 24 24" fill="var(--orange)" style={{width:16,height:16}}>
@@ -22,8 +14,11 @@ export default function ProfileHeader({ isGuest, onOpenLogin }) {
           </svg>
         )}
       </div>
+      {!isGuest && joined && (
+        <div style={{ fontFamily:'Inter,sans-serif', fontSize:11, color:'var(--text-faint)', marginBottom:6 }}>Member since {joined}</div>
+      )}
       <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, letterSpacing:1, color:'var(--text-dim)' }}>
-        {entries.length} ENTRIES LOGGED · {trackedShows} SHOWS TRACKED
+        {entryCount} ENTRIES LOGGED · {trackedShows} SHOWS TRACKED
       </div>
 
       {isGuest && (
