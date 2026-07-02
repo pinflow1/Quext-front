@@ -1,16 +1,7 @@
 import { PAD } from '../../lib/theme';
 import { GENRE_BREAKDOWN } from '../../lib/profileData';
-import useJournal from '../../lib/useJournal';
-import { JOURNAL_ENTRIES, JOURNAL_ANIME } from '../../lib/journalData';
 
-export default function StatsTab() {
-  const { entries: liveEntries, session } = useJournal();
-  const isLive = !!session;
-  const entries = isLive ? liveEntries : JOURNAL_ENTRIES;
-
-  const trackedShows = new Set(entries.map(e => e.anime_mal_id || e.animeId)).size;
-
-  // Build genre breakdown from real entries if available
+export default function StatsTab({ entries, trackedShows, isLive }) {
   const genreData = isLive && entries.length
     ? Object.entries(
         entries.reduce((acc, e) => {
@@ -58,5 +49,4 @@ export default function StatsTab() {
       </div>
     </div>
   );
-                   }
-              
+}
