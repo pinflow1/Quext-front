@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SettingsHeader from './SettingsHeader';
 import SettingsGroupLabel from './SettingsGroupLabel';
 import SettingsRow from './SettingsRow';
@@ -11,6 +11,13 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
   const [alerts, setAlerts] = useState(false);
   const [forceDark, setForceDark] = useState(false);
 
+  // Load persisted dark mode preference on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('quext-force-dark') === 'true';
+    setForceDark(saved);
+    document.documentElement.classList.toggle('theme-dark', saved);
+  }, []);
+
   const handleAlertsToggle = (next) => {
     if (isGuest) { onGuestGate('Episode alerts need an account'); return; }
     setAlerts(next);
@@ -19,6 +26,7 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
   const handleForceDark = (next) => {
     setForceDark(next);
     document.documentElement.classList.toggle('theme-dark', next);
+    localStorage.setItem('quext-force-dark', String(next));
   };
 
   return (
@@ -42,7 +50,7 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
       <SettingsRow label="Terms of Service" onClick={() => {}}/>
       <SettingsRow label="Privacy Policy" onClick={() => {}}/>
 
-      <LogOutButton/>
+      {!isGuest && <LogOutButton/>}
     </div>
   );
 }
