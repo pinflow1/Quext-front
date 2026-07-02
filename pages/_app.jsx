@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import '../styles/globals.css';
 import { AppProvider } from '../context/AppContext';
 import LoginPromptModal from '../components/auth/LoginPromptModal';
@@ -33,6 +34,11 @@ function Modals() {
 }
 
 export default function App({ Component, pageProps }) {
+  useEffect(() => {
+    const saved = localStorage.getItem('quext-force-dark') === 'true';
+    if (saved) document.documentElement.classList.add('theme-dark');
+  }, []);
+
   return (
     <AppProvider>
       <Component {...pageProps}/>
