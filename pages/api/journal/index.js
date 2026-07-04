@@ -1,5 +1,7 @@
 // GET  /api/journal  — fetch all entries for logged-in user
 // POST /api/journal  — create a new journal entry
+// Column names here match the REAL journal_entries schema:
+// entry_text (not note), episode_number (not episode), entry_date
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -9,14 +11,12 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  // Get user from auth header
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
 
-  // GET — fetch entries
   if (req.method === 'GET') {
     const { data, error } = await supabase
       .from('journal_entries')
@@ -28,12 +28,11 @@ export default async function handler(req, res) {
     return res.status(200).json({ entries: data });
   }
 
-  // POST — create entry
   if (req.method === 'POST') {
-    const { anime_mal_id, anime_title, anime_image_url, note, tag, episode } = req.body;
+    const { anime_mal_id, anime_title, anime_image_url, entry_text, tag, episode_number } = req.body;
 
-    if (!anime_mal_id || !anime_title || !note) {
-      return res.status(400).json({ error: 'anime_mal_id, anime_title and note are required' });
+    if (!anime_mal_id || !anime_title || !entry_text) {
+      return res.status(400).json({ error: 'anime_mal_id, anime_title and entry_text are required' });
     }
 
     const { data, error } = await supabase
@@ -43,9 +42,10 @@ export default async function handler(req, res) {
         anime_mal_id,
         anime_title,
         anime_image_url: anime_image_url || null,
-        note,
+        entry_text,
         tag: tag || null,
-        episode: episode || null,
+        episode_number: episode_number || null,
+        entry_date: new Date().toISOString().slice(0, 10),
       })
       .select()
       .single();
