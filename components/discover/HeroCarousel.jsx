@@ -37,16 +37,16 @@ export default function HeroCarousel({ items, onWatchClick }) {
       {/* Ambient blurred backdrop — same image, heavily blurred + scaled so it fills
           the banner as a color wash, since Jikan images are poster-sized, not banner-sized */}
       {a.image_url ? (
-        <div style={{
+        <div className="hero-backdrop" style={{
           position:'absolute', inset:-30,
           backgroundImage:`url(${a.image_url})`, backgroundSize:'cover', backgroundPosition:'center',
-          filter:'blur(38px) saturate(140%) brightness(0.55)', transform:'scale(1.15)',
+          transform:'scale(1.15)',
           transition:'background-image 0.5s ease',
         }}/>
       ) : (
         <div style={{ position:'absolute', inset:0, background:'linear-gradient(120deg,#1a1006 0%,#2e1c08 55%,rgba(255,122,0,0.2) 100%)' }}/>
       )}
-      <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)' }}/>
+      <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, var(--bg) 0%, var(--hero-scrim) 55%, transparent 100%)' }}/>
       <div style={{ position:'absolute', inset:0, background:'linear-gradient(to right, var(--hero-fade) 0%, transparent 60%)' }}/>
 
       {/* Sharp poster — native aspect ratio, not stretched, right-aligned */}
@@ -84,6 +84,13 @@ export default function HeroCarousel({ items, onWatchClick }) {
         ))}
       </div>
 
+      <style>{`
+        .hero-backdrop { filter: blur(38px) saturate(140%) brightness(0.55); }
+        @media (prefers-color-scheme: light) {
+          .hero-backdrop { filter: blur(38px) saturate(120%) brightness(1.25) contrast(0.9); }
+        }
+        html.theme-dark .hero-backdrop { filter: blur(38px) saturate(140%) brightness(0.55); }
+      `}</style>
     </div>
   );
 }
