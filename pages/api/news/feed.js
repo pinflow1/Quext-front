@@ -7,10 +7,17 @@
 
 import Parser from 'rss-parser';
 
-const parser = new Parser({ timeout: 8000 });
+// Crunchyroll blocks requests without a realistic browser User-Agent —
+// without this header the fetch gets silently rejected.
+const parser = new Parser({
+  timeout: 8000,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  },
+});
 
 const SOURCES = [
-  { key: 'crunchyroll', name: 'Crunchyroll', url: 'https://www.crunchyroll.com/newsrss' },
+  { key: 'crunchyroll', name: 'Crunchyroll', url: 'https://www.crunchyroll.com/newsrss?lang=en' },
   { key: 'mal',         name: 'MyAnimeList', url: 'https://myanimelist.net/rss/news.xml' },
   { key: 'ann',         name: 'ANN',         url: 'https://www.animenewsnetwork.com/all/rss.xml' },
 ];
@@ -46,6 +53,10 @@ export default async function handler(req, res) {
       }));
     })
   );
+
+  results.forEach((r, i) => {
+    if (r.status === 'rejected') console.error(`${SOURCES[i].name} feed failed:`, r.reason?.message);
+  });
 
   const articles = results
     .filter((r) => r.status === 'fulfilled')
