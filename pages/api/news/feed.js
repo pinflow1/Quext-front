@@ -45,15 +45,22 @@ export default async function handler(req, res) {
   const results = await Promise.allSettled(
     SOURCES.map(async (src) => {
       const feed = await parser.parseURL(src.url);
-      return feed.items.slice(0, 10).map((item) => ({
-        title: item.title,
-        summary: stripHtml(item.contentSnippet || item.content || '').slice(0, 160),
-        link: item.link,
-        image: extractImage(item),
-        source: src.name,
-        sourceKey: src.key,
-        publishedAt: item.pubDate || item.isoDate || null,
-      }));
+      // Pull a much bigger pool from ANN so there's enough material
+      // to actually find Crunchyroll mentions in when backfilling.
+      const limit = src.key === 'ann' ? 60 : 10;
+      return feed.items.slice(0, limit).map((item) => {
+        const rawText = `${item.title} ${item.contentSnippet || item.content || ''}`;
+        return {
+          title: item.title,
+          summary: stripHtml(item.contentSnippet || item.content || '').slice(0, 160),
+          rawText,
+          link: item.link,
+          image: extractImage(item),
+          source: src.name,
+          sourceKey: src.key,
+          publishedAt: item.pubDate || item.isoDate || null,
+        };
+      });
     })
   );
 
@@ -68,14 +75,26 @@ export default async function handler(req, res) {
 
   // Backfill Crunchyroll tab from ANN if the direct feed failed —
   // ANN covers Crunchyroll's catalog extensively since CR is the
-  // dominant Western distributor.
+  // dominant Western distributor. Search the full raw text, not the
+  // truncated summary, so mentions further into the article still match.
   const crFailed = failedSources.some(f => f.name === 'Crunchyroll');
   if (crFailed) {
     const proxied = articles
-      .filter(a => a.sourceKey === 'ann' && /crunchyroll/i.test(a.title + a.summary))
+      .filter(a => a.sourceKey === 'ann' && /crunchyroll/i.test(a.rawText))
       .map(a => ({ ...a, sourceKey: 'crunchyroll', source: 'Crunchyroll · via ANN' }));
     articles = [...articles, ...proxied];
   }
+
+  // Trim ANN's own contribution back down to 10 for the general feed
+  // now that we've mined it for Crunchyroll mentions above.
+  const annCount = { count: 0 };
+  articles = articles
+    .filter(a => {
+      if (a.sourceKey !== 'ann') return true;
+      annCount.count++;
+      return annCount.count <= 10;
+    })
+    .map(({ rawText, ...rest }) => rest); // drop rawText, not needed by the frontend
 
   articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
