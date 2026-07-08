@@ -32,8 +32,8 @@ export default function News() {
     <Layout>
       <PageHeader eyebrow="Straight From The Source" title="News" meta={`${articles.length} STORIES · UPDATED HOURLY`}/>
       {failedSources.length > 0 && (
-        <div style={{ margin:`0 ${PAD} 16px`, padding:'10px 14px', border:'1px solid var(--hairline)', borderRadius:10, fontFamily:'Inter,sans-serif', fontSize:11, color:'var(--text-faint)' }}>
-          Couldn't reach: {failedSources.join(', ')}
+        <div style={{ margin:`0 ${PAD} 16px`, padding:'10px 14px', border:'1px solid var(--hairline)', borderRadius:10, fontFamily:'Inter,sans-serif', fontSize:11, color:'var(--text-faint)', lineHeight:1.6 }}>
+          {failedSources.map(f => <div key={f.name}>Couldn't reach {f.name}{f.reason ? `: ${f.reason}` : ''}</div>)}
         </div>
       )}
       <PlatformFilter active={active} setActive={setActive}/>
