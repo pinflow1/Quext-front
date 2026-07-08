@@ -13,6 +13,9 @@ const parser = new Parser({
   timeout: 8000,
   headers: {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Referer': 'https://www.crunchyroll.com/news',
   },
 });
 
@@ -65,8 +68,8 @@ export default async function handler(req, res) {
     .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
   const failedSources = SOURCES
-    .filter((_, i) => results[i].status === 'rejected')
-    .map((s) => s.name);
+    .map((s, i) => results[i].status === 'rejected' ? { name: s.name, reason: results[i].reason?.message } : null)
+    .filter(Boolean);
 
   res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=600');
   return res.status(200).json({ articles, failedSources });
