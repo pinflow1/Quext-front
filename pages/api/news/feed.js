@@ -5,11 +5,12 @@
 // silently breaking/moving (confirmed via GitHub issue tracking).
 // Rather than depend on an endpoint that's proven unreliable, we pull
 // Crunchyroll-tagged stories out of the stable ANN feed by matching
-// "Crunchyroll" in the title/summary — labeled transparently as
+// "Crunchyroll" in the title/content — labeled transparently as
 // "Crunchyroll · via ANN" rather than pretending to be their own feed.
 // We still attempt the direct feed as a bonus source if it's up.
 
 import Parser from 'rss-parser';
+import { fetchOgImage } from '../../../lib/ogImage';
 
 const parser = new Parser({
   timeout: 8000,
@@ -46,21 +47,18 @@ export default async function handler(req, res) {
     SOURCES.map(async (src) => {
       const feed = await parser.parseURL(src.url);
       // Pull a much bigger pool from ANN so there's enough material
-      // to actually find Crunchyroll mentions in when backfilling.
+      // to find Crunchyroll mentions in when backfilling below.
       const limit = src.key === 'ann' ? 60 : 10;
-      return feed.items.slice(0, limit).map((item) => {
-        const rawText = `${item.title} ${item.contentSnippet || item.content || ''}`;
-        return {
-          title: item.title,
-          summary: stripHtml(item.contentSnippet || item.content || '').slice(0, 160),
-          rawText,
-          link: item.link,
-          image: extractImage(item),
-          source: src.name,
-          sourceKey: src.key,
-          publishedAt: item.pubDate || item.isoDate || null,
-        };
-      });
+      return feed.items.slice(0, limit).map((item) => ({
+        title: item.title,
+        summary: stripHtml(item.contentSnippet || item.content || '').slice(0, 160),
+        rawText: `${item.title} ${item.contentSnippet || item.content || ''}`,
+        link: item.link,
+        image: extractImage(item),
+        source: src.name,
+        sourceKey: src.key,
+        publishedAt: item.pubDate || item.isoDate || null,
+      }));
     })
   );
 
@@ -73,10 +71,7 @@ export default async function handler(req, res) {
     .flatMap((r) => r.value)
     .filter((a) => a.title && a.link);
 
-  // Backfill Crunchyroll tab from ANN if the direct feed failed —
-  // ANN covers Crunchyroll's catalog extensively since CR is the
-  // dominant Western distributor. Search the full raw text, not the
-  // truncated summary, so mentions further into the article still match.
+  // Backfill Crunchyroll tab from ANN if the direct feed failed.
   const crFailed = failedSources.some(f => f.name === 'Crunchyroll');
   if (crFailed) {
     const proxied = articles
@@ -85,8 +80,8 @@ export default async function handler(req, res) {
     articles = [...articles, ...proxied];
   }
 
-  // Trim ANN's own contribution back down to 10 for the general feed
-  // now that we've mined it for Crunchyroll mentions above.
+  // Trim ANN's own contribution back to 10 for the general feed now
+  // that we've mined the larger pool for Crunchyroll mentions above.
   const annCount = { count: 0 };
   articles = articles
     .filter(a => {
@@ -94,9 +89,14 @@ export default async function handler(req, res) {
       annCount.count++;
       return annCount.count <= 10;
     })
-    .map(({ rawText, ...rest }) => rest); // drop rawText, not needed by the frontend
+    .map(({ rawText, ...rest }) => rest);
 
   articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+
+  // Backfill missing thumbnails via og:image — capped to 15 articles
+  // so this can't blow past the function's execution timeout.
+  const missingImage = articles.filter(a => !a.image).slice(0, 15);
+  await Promise.allSettled(missingImage.map(async (a) => { a.image = await fetchOgImage(a.link); }));
 
   res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=600');
   return res.status(200).json({ articles, failedSources });
