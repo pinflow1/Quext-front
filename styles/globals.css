@@ -22,6 +22,7 @@
   --red: #FF4D4D;
   --btn-text: #0A0A0A;
   --hero-fade: rgba(10,10,10,0.55);
+  --hero-scrim: rgba(0,0,0,0.4);
   --scroll-thumb: #1c1c1c;
 }
 
@@ -50,6 +51,7 @@
     --red: #E0383D;
     --btn-text: #0A0A0A;
     --hero-fade: rgba(250,250,248,0.65);
+    --hero-scrim: rgba(255,255,255,0.5);
     --scroll-thumb: rgba(10,10,10,0.2);
   }
 }
@@ -76,6 +78,7 @@ html.theme-dark {
   --cyan: #5EEBFF;
   --red: #FF4D4D;
   --hero-fade: rgba(10,10,10,0.55);
+  --hero-scrim: rgba(0,0,0,0.4);
   --scroll-thumb: #1c1c1c;
 }
 
