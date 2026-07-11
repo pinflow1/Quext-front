@@ -51,4 +51,4 @@ export default function ShareCardButton({ anime, isPremium }) {
       </button>
     </div>
   );
-          }
+}
