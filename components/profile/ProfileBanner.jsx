@@ -1,13 +1,10 @@
 import { PAD } from '../../lib/theme';
-import { JOURNAL_ANIME } from '../../lib/journalData';
+import { getBannerGradient } from '../../lib/profileData';
 
-export default function ProfileBanner({ onOpenSettings, avatarUrl, streak, isGuest }) {
+export default function ProfileBanner({ onOpenSettings, onEditAvatar, avatarUrl, bannerStyle, streak, isGuest }) {
   return (
     <div style={{ position:'relative', marginBottom:60 }}>
-      <div style={{
-        height:150, position:'relative', overflow:'hidden',
-        background:`linear-gradient(120deg, ${JOURNAL_ANIME[0].palette[0]} 0%, ${JOURNAL_ANIME[1].palette[1]} 60%, var(--orange-tint) 100%)`,
-      }}>
+      <div style={{ height:150, position:'relative', overflow:'hidden', background:getBannerGradient(bannerStyle) }}>
         <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 75% 20%, var(--orange-tint) 0%, transparent 60%)' }}/>
       </div>
 
@@ -34,19 +31,19 @@ export default function ProfileBanner({ onOpenSettings, avatarUrl, streak, isGue
         </div>
       )}
 
-      <div style={{ position:'absolute', left:PAD, bottom:-44, width:88, height:88, borderRadius:50, padding:4, background:'var(--bg)' }}>
+      <button onClick={onEditAvatar} disabled={isGuest} style={{ position:'absolute', left:PAD, bottom:-44, width:88, height:88, borderRadius:50, padding:4, background:'var(--bg)', border:'none', cursor: isGuest ? 'default' : 'pointer' }}>
         {avatarUrl ? (
           <img src={avatarUrl} alt="" style={{ width:'100%', height:'100%', borderRadius:50, objectFit:'cover', border:'2px solid var(--orange-tint)' }}/>
         ) : (
           <div style={{ width:'100%', height:'100%', borderRadius:50, background:'linear-gradient(135deg, var(--orange), #2e1c08)', border:'2px solid var(--orange-tint)', position:'relative' }}>
-            <div style={{ position:'absolute', bottom:-2, right:-2, width:24, height:24, borderRadius:50, background:'var(--orange)', border:'3px solid var(--bg)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{width:11,height:11}}>
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-            </div>
+            {!isGuest && (
+              <div style={{ position:'absolute', bottom:-2, right:-2, width:24, height:24, borderRadius:50, background:'var(--orange)', border:'3px solid var(--bg)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width:11,height:11}}><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
+            )}
           </div>
         )}
-      </div>
+      </button>
     </div>
   );
-}
+            }
