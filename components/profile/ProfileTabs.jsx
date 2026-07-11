@@ -1,6 +1,6 @@
 import { PAD } from '../../lib/theme';
 
-const TABS = ['Activity', 'Stats', 'Badges'];
+const TABS = ['Activity', 'Refer'];
 
 export default function ProfileTabs({ tab, setTab }) {
   return (
