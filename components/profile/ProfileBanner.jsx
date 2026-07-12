@@ -4,9 +4,23 @@ import { getBannerGradient } from '../../lib/profileData';
 export default function ProfileBanner({ onOpenSettings, onEditAvatar, avatarUrl, bannerStyle, streak, isGuest }) {
   return (
     <div style={{ position:'relative', marginBottom:60 }}>
-      <div style={{ height:150, position:'relative', overflow:'hidden', background:getBannerGradient(bannerStyle) }}>
+      <button
+        onClick={onEditAvatar}
+        disabled={isGuest}
+        style={{ height:150, position:'relative', overflow:'hidden', background:getBannerGradient(bannerStyle), width:'100%', border:'none', padding:0, cursor: isGuest ? 'default' : 'pointer' }}
+      >
         <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 75% 20%, var(--orange-tint) 0%, transparent 60%)' }}/>
-      </div>
+        {!isGuest && (
+          <div style={{
+            position:'absolute', bottom:10, right:16, display:'flex', alignItems:'center', gap:5,
+            background:'var(--glass-bg)', backdropFilter:'blur(12px)', border:'1px solid var(--glass-border)',
+            borderRadius:50, padding:'5px 11px',
+          }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width:11,height:11}}><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, letterSpacing:0.5, color:'var(--text)', textTransform:'uppercase' }}>Edit</span>
+          </div>
+        )}
+      </button>
 
       <button onClick={onOpenSettings} style={{
         position:'absolute', top:16, right:16, width:36, height:36, borderRadius:50,
@@ -46,4 +60,4 @@ export default function ProfileBanner({ onOpenSettings, onEditAvatar, avatarUrl,
       </button>
     </div>
   );
-            }
+}
