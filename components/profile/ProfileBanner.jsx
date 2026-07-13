@@ -1,15 +1,16 @@
 import { PAD } from '../../lib/theme';
 import { getBannerGradient } from '../../lib/profileData';
 
-export default function ProfileBanner({ onOpenSettings, onEditAvatar, avatarUrl, bannerStyle, streak, isGuest }) {
+export default function ProfileBanner({ onOpenSettings, onEditAvatar, avatarUrl, bannerStyle, bannerUrl, streak, isGuest }) {
+  const bannerBg = bannerUrl ? `url(${bannerUrl}) center/cover` : getBannerGradient(bannerStyle);
   return (
     <div style={{ position:'relative', marginBottom:60 }}>
       <button
         onClick={onEditAvatar}
         disabled={isGuest}
-        style={{ height:150, position:'relative', overflow:'hidden', background:getBannerGradient(bannerStyle), width:'100%', border:'none', padding:0, cursor: isGuest ? 'default' : 'pointer' }}
+        style={{ height:150, position:'relative', overflow:'hidden', background:bannerBg, width:'100%', border:'none', padding:0, cursor: isGuest ? 'default' : 'pointer' }}
       >
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 75% 20%, var(--orange-tint) 0%, transparent 60%)' }}/>
+        <div style={{ position:'absolute', inset:0, background: bannerUrl ? 'rgba(0,0,0,0.15)' : 'radial-gradient(ellipse at 75% 20%, var(--orange-tint) 0%, transparent 60%)' }}/>
         {!isGuest && (
           <div style={{
             position:'absolute', bottom:10, right:16, display:'flex', alignItems:'center', gap:5,
