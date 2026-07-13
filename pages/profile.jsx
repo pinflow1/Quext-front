@@ -18,7 +18,7 @@ export default function Profile() {
   const [tab, setTab] = useState('Activity');
   const [editing, setEditing] = useState(false);
   const { isGuest, isPremium, handleGuestGate, setShowLoginPrompt } = useApp();
-  const { session, name, avatarUrl, bannerStyle, joined, entries, trackedShows, streak, refresh } = useProfile();
+  const { session, name, avatarUrl, bannerStyle, bannerUrl, joined, entries, trackedShows, streak, refresh } = useProfile();
 
   const displayEntries = isGuest ? JOURNAL_ENTRIES : entries;
   const displayShows = isGuest ? new Set(JOURNAL_ENTRIES.map(e => e.animeId)).size : trackedShows;
@@ -43,6 +43,7 @@ export default function Profile() {
         onEditAvatar={handleAvatarTap}
         avatarUrl={avatarUrl}
         bannerStyle={bannerStyle}
+        bannerUrl={bannerUrl}
         streak={streak}
         isGuest={isGuest}
       />
@@ -64,6 +65,7 @@ export default function Profile() {
           currentName={name}
           currentAvatar={avatarUrl}
           currentBanner={bannerStyle}
+          currentBannerUrl={bannerUrl}
           onClose={() => setEditing(false)}
           onSaved={refresh}
         />
