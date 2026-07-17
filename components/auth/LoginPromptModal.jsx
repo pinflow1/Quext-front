@@ -31,7 +31,7 @@ export default function LoginPromptModal({ onClose, onSignIn }) {
         width:'100%', maxWidth:560, padding:`28px ${PAD} 32px`,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
-          <img src="/images/logo.png" alt="Quext" width={28} height={28} style={{ objectFit:'contain' }}/>
+          <img src="/images/logo.webp" alt="Quext" width={28} height={28} style={{ objectFit:'contain' }}/>
           <span style={{ fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:700, letterSpacing:'-0.02em', fontSize:18, color:'var(--text)' }}>Quext</span>
         </div>
         <h2 style={{ fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:700, letterSpacing:'-0.015em', fontSize:22, color:'var(--text)', margin:'0 0 8px' }}>Don't lose your progress</h2>
@@ -80,5 +80,4 @@ export default function LoginPromptModal({ onClose, onSignIn }) {
       </div>
     </div>
   );
-      }
-                                                                                                                                                                             
+                }
