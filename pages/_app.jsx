@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import '../styles/globals.css';
 import { AppProvider } from '../context/AppContext';
+import ErrorBoundary from '../components/ErrorBoundary';
 import LoginPromptModal from '../components/auth/LoginPromptModal';
 import ReminderToast from '../components/auth/ReminderToast';
 import UpsellPopup from '../components/auth/UpsellPopup';
@@ -34,6 +36,8 @@ function Modals() {
 }
 
 export default function App({ Component, pageProps }) {
+  const router = useRouter();
+
   useEffect(() => {
     const saved = localStorage.getItem('quext-force-dark') === 'true';
     if (saved) document.documentElement.classList.add('theme-dark');
@@ -41,7 +45,9 @@ export default function App({ Component, pageProps }) {
 
   return (
     <AppProvider>
-      <Component {...pageProps}/>
+      <ErrorBoundary routeKey={router.pathname}>
+        <Component {...pageProps}/>
+      </ErrorBoundary>
       <Modals/>
     </AppProvider>
   );
