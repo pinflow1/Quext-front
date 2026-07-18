@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import '../styles/globals.css';
 import { AppProvider } from '../context/AppContext';
 import ErrorBoundary from '../components/ErrorBoundary';
+import GoogleAnalytics from '../components/GoogleAnalytics';
+import { pageview } from '../lib/gtag';
 import LoginPromptModal from '../components/auth/LoginPromptModal';
 import ReminderToast from '../components/auth/ReminderToast';
 import UpsellPopup from '../components/auth/UpsellPopup';
@@ -43,12 +45,19 @@ export default function App({ Component, pageProps }) {
     if (saved) document.documentElement.classList.add('theme-dark');
   }, []);
 
+  useEffect(() => {
+    const handleRouteChange = (url) => pageview(url);
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => router.events.off('routeChangeComplete', handleRouteChange);
+  }, [router.events]);
+
   return (
     <AppProvider>
+      <GoogleAnalytics/>
       <ErrorBoundary routeKey={router.pathname}>
         <Component {...pageProps}/>
       </ErrorBoundary>
       <Modals/>
     </AppProvider>
   );
-}
+  }
