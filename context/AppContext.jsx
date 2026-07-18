@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { openWatchLink } from '../lib/streamingLinks';
+import { event as gaEvent } from '../lib/gtag';
 
 const AppContext = createContext(null);
 
@@ -38,20 +40,31 @@ export function AppProvider({ children }) {
 
   const handleSignIn = () => {
     // isGuest flips to false via onAuthStateChange once Supabase confirms the session
+    gaEvent('sign_in');
     setShowLoginPrompt(false);
     setReminder(null);
   };
 
   const handleGuestGate = (message) => setReminder(message);
 
-  const handleWatchClick = (title, platform) => {
-    if (isPremium) return;
-    const next = watchClicks + 1;
-    setWatchClicks(next);
-    if (next % 5 === 0) setShowUpsell(true);
+  // Every Watch Now button routes through here. Opens the real deep
+  // link to the show's page on its streaming platform (fetched fresh
+  // since the lighter list endpoints don't include streaming data).
+  // Non-premium clicks also count toward the upsell popup — this used
+  // to skip opening the link entirely for premium users, which was a
+  // bug; now the link always opens, only the upsell counting is gated.
+  const handleWatchClick = async (malId, title) => {
+    gaEvent('watch_click', { anime_title: title || 'unknown' });
+    if (!isPremium) {
+      const next = watchClicks + 1;
+      setWatchClicks(next);
+      if (next % 5 === 0) setShowUpsell(true);
+    }
+    if (malId) await openWatchLink(malId);
   };
 
   const handleUpgrade = () => {
+    gaEvent('premium_upgrade');
     setIsPremium(true);
     setShowUpsell(false);
   };
