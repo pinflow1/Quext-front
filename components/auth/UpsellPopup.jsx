@@ -1,3 +1,5 @@
+import { PREMIUM_PRICE_LABEL } from '../../lib/premiumConfig';
+
 export default function UpsellPopup({ onUpgrade, onClose }) {
   return (
     <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:300, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
@@ -8,7 +10,7 @@ export default function UpsellPopup({ onUpgrade, onClose }) {
         <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, letterSpacing:2, color:'var(--cyan)', textTransform:'uppercase', marginBottom:10 }}>Quext Premium</div>
         <div style={{ fontFamily:"'Plus Jakarta Sans',sans-serif", fontWeight:700, letterSpacing:'-0.01em', fontSize:18, color:'var(--text)', marginBottom:8 }}>Enjoying Quext?</div>
         <p style={{ fontFamily:'Inter,sans-serif', fontSize:13, color:'var(--text-dim)', lineHeight:1.6, margin:'0 0 20px' }}>
-          Go Premium to remove sponsored picks and unlock custom themes — just $2.99/mo.
+          Go Premium to remove sponsored picks and unlock custom themes — just {PREMIUM_PRICE_LABEL}.
         </p>
         <button onClick={onUpgrade} className="btn-resume" style={{
           width:'100%', border:'none', borderRadius:50, padding:12,
