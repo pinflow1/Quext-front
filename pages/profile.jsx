@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import ProfileBanner from '../components/profile/ProfileBanner';
@@ -10,6 +10,7 @@ import EditProfileModal from '../components/profile/EditProfileModal';
 import SettingsPage from '../components/settings/SettingsPage';
 import useProfile from '../lib/useProfile';
 import { useApp } from '../context/AppContext';
+import { event as gaEvent } from '../lib/gtag';
 import { JOURNAL_ENTRIES } from '../lib/journalData';
 
 export default function Profile() {
@@ -17,8 +18,21 @@ export default function Profile() {
   const [view, setView] = useState('profile');
   const [tab, setTab] = useState('Activity');
   const [editing, setEditing] = useState(false);
-  const { isGuest, isPremium, handleGuestGate, setShowLoginPrompt } = useApp();
+  const [justUpgraded, setJustUpgraded] = useState(false);
+  const { isGuest, isPremium, refreshPremium, handleGuestGate, setShowLoginPrompt } = useApp();
   const { session, name, avatarUrl, bannerStyle, bannerUrl, joined, entries, trackedShows, streak, refresh } = useProfile();
+
+  // Paystack redirects here after checkout — refresh real premium
+  // status (the webhook has usually already fired by this point) and
+  // clean the URL so a refresh doesn't re-trigger this.
+  useEffect(() => {
+    if (router.query.upgraded === 'true') {
+      refreshPremium();
+      gaEvent('premium_upgrade_completed');
+      setJustUpgraded(true);
+      router.replace('/profile', undefined, { shallow: true });
+    }
+  }, [router.query.upgraded]);
 
   const displayEntries = isGuest ? JOURNAL_ENTRIES : entries;
   const displayShows = isGuest ? new Set(JOURNAL_ENTRIES.map(e => e.animeId)).size : trackedShows;
@@ -38,6 +52,11 @@ export default function Profile() {
 
   return (
     <Layout>
+      {justUpgraded && (
+        <div style={{ margin:'20px 32px 0', padding:'12px 16px', background:'rgba(94,235,255,0.08)', border:'1px solid var(--cyan)', borderRadius:10, fontFamily:'Inter,sans-serif', fontSize:12, color:'var(--cyan)' }}>
+          Welcome to Premium — enjoy the ad-free experience 🎉
+        </div>
+      )}
       <ProfileBanner
         onOpenSettings={() => setView('settings')}
         onEditAvatar={handleAvatarTap}
