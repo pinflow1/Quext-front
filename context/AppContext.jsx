@@ -15,7 +15,7 @@ export function AppProvider({ children }) {
   const [watchClicks, setWatchClicks] = useState(0);
   const [showUpsell, setShowUpsell] = useState(false);
 
-  const { isPremium, refresh: refreshPremium, startCheckout } = usePremium(session);
+  const { isPremium, refresh: refreshPremium, startCheckout, checkoutError, startingCheckout } = usePremium(session);
 
   // Check the REAL Supabase session on mount — this fixes the loop where
   // OAuth redirects back but isGuest reset to true, re-triggering the popup.
@@ -64,11 +64,11 @@ export function AppProvider({ children }) {
   };
 
   // Redirects to Paystack's hosted checkout. isPremium flips to true
-  // automatically once the webhook confirms payment — this no longer
-  // fakes it instantly like before.
+  // automatically once the webhook confirms payment. The popup stays
+  // open on failure so checkoutError is actually visible — closing it
+  // immediately used to hide errors before anyone could see them.
   const handleUpgrade = async () => {
     gaEvent('premium_checkout_started');
-    setShowUpsell(false);
     await startCheckout();
   };
 
@@ -78,6 +78,7 @@ export function AppProvider({ children }) {
       showLoginPrompt, setShowLoginPrompt,
       reminder, setReminder,
       showUpsell, setShowUpsell,
+      checkoutError, startingCheckout,
       handleSignIn, handleGuestGate, handleWatchClick, handleUpgrade,
     }}>
       {children}
@@ -86,4 +87,3 @@ export function AppProvider({ children }) {
 }
 
 export const useApp = () => useContext(AppContext);
-    
