@@ -2,6 +2,8 @@
 // Returns hidden gems — high score, low popularity, not mainstream
 // Used by: Discover page Hidden Gems section
 
+import { jikanFetch } from '../../../lib/jikanFetch';
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -18,13 +20,7 @@ export default async function handler(req, res) {
       limit: '6',
     });
 
-    const response = await fetch(
-      `https://api.jikan.moe/v4/anime?${params}`,
-      { headers: { 'Accept': 'application/json' } }
-    );
-
-    if (!response.ok) throw new Error(`Jikan responded with ${response.status}`);
-
+    const response = await jikanFetch(`https://api.jikan.moe/v4/anime?${params}`);
     const data = await response.json();
 
     // Filter to genuinely less popular titles (popularity rank > 200)
