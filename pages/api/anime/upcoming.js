@@ -2,6 +2,8 @@
 // Returns anime premiering or with confirmed dates this/next month
 // Used by: Calendar page grid + upcoming list
 
+import { jikanFetch } from '../../../lib/jikanFetch';
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -9,13 +11,7 @@ export default async function handler(req, res) {
 
   try {
     // Jikan seasons/upcoming gives next season's confirmed lineup
-    const response = await fetch(
-      'https://api.jikan.moe/v4/seasons/upcoming?limit=20&sfw=true',
-      { headers: { 'Accept': 'application/json' } }
-    );
-
-    if (!response.ok) throw new Error(`Jikan responded with ${response.status}`);
-
+    const response = await jikanFetch('https://api.jikan.moe/v4/seasons/upcoming?limit=20&sfw=true');
     const data = await response.json();
 
     const events = data.data
