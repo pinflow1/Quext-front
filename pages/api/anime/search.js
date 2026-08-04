@@ -1,6 +1,8 @@
 // GET /api/anime/search?q=frieren&limit=10
 // Used by: Discover search bar, Journal add entry anime picker
 
+import { jikanFetch } from '../../../lib/jikanFetch';
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -21,15 +23,7 @@ export default async function handler(req, res) {
       sfw: 'true',
     });
 
-    const response = await fetch(
-      `https://api.jikan.moe/v4/anime?${params}`,
-      { headers: { 'Accept': 'application/json' } }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Jikan responded with ${response.status}`);
-    }
-
+    const response = await jikanFetch(`https://api.jikan.moe/v4/anime?${params}`);
     const data = await response.json();
 
     const results = data.data.map(a => ({
@@ -51,5 +45,4 @@ export default async function handler(req, res) {
     console.error('search error:', err.message);
     return res.status(500).json({ error: 'Search failed' });
   }
-}
-  
+        }
