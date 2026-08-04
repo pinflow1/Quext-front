@@ -2,21 +2,15 @@
 // Returns current season anime from Jikan API
 // Used by: Discover page (hero, trending, new season alert rows)
 
+import { jikanFetch } from '../../../lib/jikanFetch';
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const response = await fetch(
-      'https://api.jikan.moe/v4/seasons/now?limit=24',
-      { headers: { 'Accept': 'application/json' } }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Jikan responded with ${response.status}`);
-    }
-
+    const response = await jikanFetch('https://api.jikan.moe/v4/seasons/now?limit=24');
     const data = await response.json();
 
     // Shape the data to match what our components expect
