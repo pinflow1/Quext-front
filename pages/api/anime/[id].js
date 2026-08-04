@@ -2,6 +2,8 @@
 // Returns full detail for a single anime by MAL ID
 // Used by: Calendar event modal, journal entry detail
 
+import { jikanFetch } from '../../../lib/jikanFetch';
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -14,20 +16,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const [animeRes, episodesRes] = await Promise.all([
-      fetch(`https://api.jikan.moe/v4/anime/${id}/full`, { headers: { 'Accept': 'application/json' } }),
-      fetch(`https://api.jikan.moe/v4/anime/${id}/episodes?page=1`, { headers: { 'Accept': 'application/json' } }),
+    // allSettled — episodes are optional and already fall back to an
+    // empty list, so one retry-exhausted failure there shouldn't sink
+    // the whole request the way Promise.all would.
+    const [animeResult, episodesResult] = await Promise.allSettled([
+      jikanFetch(`https://api.jikan.moe/v4/anime/${id}/full`),
+      jikanFetch(`https://api.jikan.moe/v4/anime/${id}/episodes?page=1`),
     ]);
 
-    if (!animeRes.ok) {
-      if (animeRes.status === 404) return res.status(404).json({ error: 'Anime not found' });
-      throw new Error(`Jikan responded with ${animeRes.status}`);
+    if (animeResult.status === 'rejected') {
+      if (animeResult.reason?.message?.includes('404')) return res.status(404).json({ error: 'Anime not found' });
+      throw animeResult.reason;
     }
 
-    const animeData = await animeRes.json();
+    const animeData = await animeResult.value.json();
     const a = animeData.data;
 
-    const episodesData = episodesRes.ok ? await episodesRes.json() : { data: [] };
+    const episodesData = episodesResult.status === 'fulfilled' ? await episodesResult.value.json() : { data: [] };
 
     const anime = {
       mal_id:      a.mal_id,
