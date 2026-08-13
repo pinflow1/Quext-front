@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await jikanFetch('https://api.jikan.moe/v4/schedules?limit=25&sfw=true');
+    const response = await jikanFetch('https://api.jikan.moe/v4/schedules?limit=15&sfw=true');
     const data = await response.json();
 
     // Sort by score descending, take top 8 for the heatmap rows
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       })
       .filter(a => a.dayIndex !== null);
 
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
+    res.setHeader('Cache-Control', 's-maxage=10800, stale-while-revalidate=3600');
     return res.status(200).json({ shows });
 
   } catch (err) {
