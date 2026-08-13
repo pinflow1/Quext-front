@@ -10,22 +10,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    // High score (8–9), low popularity rank (>500 = less known), completed only
-    const params = new URLSearchParams({
-      order_by: 'score',
-      sort: 'desc',
-      min_score: '8',
-      status: 'complete',
-      sfw: 'true',
-      limit: '6',
-    });
-
-    const response = await jikanFetch(`https://api.jikan.moe/v4/anime?${params}`);
+    // /top/anime is one of Jikan's most-requested endpoints and stays
+    // heavily cached on their end — much faster and more reliable than
+    // the multi-filter /anime search we used before, which was timing
+    // out under load. We do the "hidden gem" filtering ourselves instead.
+    const response = await jikanFetch('https://api.jikan.moe/v4/top/anime?limit=25&sfw=true');
     const data = await response.json();
 
     // Filter to genuinely less popular titles (popularity rank > 200)
     const gems = data.data
-      .filter(a => a.popularity > 200 && a.synopsis)
+      .filter(a => a.score >= 8 && a.popularity > 200 && a.status === 'Finished Airing' && a.synopsis)
       .slice(0, 4)
       .map(a => ({
         mal_id:    a.mal_id,
@@ -39,7 +33,7 @@ export default async function handler(req, res) {
         byline:    '— curated by the Quext team',
       }));
 
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
+    res.setHeader('Cache-Control', 's-maxage=10800, stale-while-revalidate=3600');
     return res.status(200).json({ gems });
 
   } catch (err) {
