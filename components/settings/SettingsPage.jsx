@@ -6,12 +6,12 @@ import SettingsToggleRow from './SettingsToggleRow';
 import AccountRow from './AccountRow';
 import SupportRow from './SupportRow';
 import LogOutButton from './LogOutButton';
+import AccentThemePicker from './AccentThemePicker';
 
 export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
   const [alerts, setAlerts] = useState(false);
   const [forceDark, setForceDark] = useState(false);
 
-  // Load persisted dark mode preference on mount
   useEffect(() => {
     const saved = localStorage.getItem('quext-force-dark') === 'true';
     setForceDark(saved);
@@ -42,6 +42,7 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
 
       <SettingsGroupLabel>Preferences</SettingsGroupLabel>
       <SettingsToggleRow label="Force Dark Mode" checked={forceDark} onChange={handleForceDark}/>
+      <AccentThemePicker/>
       <SettingsRow label="Language" onClick={() => {}}/>
 
       <SettingsGroupLabel>Support</SettingsGroupLabel>
