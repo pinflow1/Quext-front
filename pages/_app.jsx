@@ -8,31 +8,25 @@ import { pageview } from '../lib/gtag';
 import LoginPromptModal from '../components/auth/LoginPromptModal';
 import ReminderToast from '../components/auth/ReminderToast';
 import UpsellPopup from '../components/auth/UpsellPopup';
+import AccentPickerModal from '../components/settings/AccentPickerModal';
 import { useApp } from '../context/AppContext';
 
 function Modals() {
-  const { showLoginPrompt, setShowLoginPrompt, reminder, setReminder, showUpsell, setShowUpsell, handleSignIn, handleUpgrade } = useApp();
+  const {
+    showLoginPrompt, setShowLoginPrompt,
+    reminder, setReminder,
+    showUpsell, setShowUpsell,
+    showAccentPicker, setShowAccentPicker,
+    handleSignIn, handleUpgrade,
+  } = useApp();
   return (
     <>
-      {showLoginPrompt && (
-        <LoginPromptModal
-          onClose={() => setShowLoginPrompt(false)}
-          onSignIn={handleSignIn}
-        />
-      )}
+      {showLoginPrompt && <LoginPromptModal onClose={() => setShowLoginPrompt(false)} onSignIn={handleSignIn}/>}
       {reminder && (
-        <ReminderToast
-          message={reminder}
-          onClose={() => setReminder(null)}
-          onSignIn={() => { setReminder(null); setShowLoginPrompt(true); }}
-        />
+        <ReminderToast message={reminder} onClose={() => setReminder(null)} onSignIn={() => { setReminder(null); setShowLoginPrompt(true); }}/>
       )}
-      {showUpsell && (
-        <UpsellPopup
-          onClose={() => setShowUpsell(false)}
-          onUpgrade={handleUpgrade}
-        />
-      )}
+      {showUpsell && <UpsellPopup onClose={() => setShowUpsell(false)} onUpgrade={handleUpgrade}/>}
+      {showAccentPicker && <AccentPickerModal onClose={() => setShowAccentPicker(false)}/>}
     </>
   );
 }
@@ -60,4 +54,4 @@ export default function App({ Component, pageProps }) {
       <Modals/>
     </AppProvider>
   );
-  }
+}
