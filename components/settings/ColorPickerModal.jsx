@@ -1,25 +1,32 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import ColorWheel from './ColorWheel';
-import { hexToHsv, hsvToHex } from '../../lib/accentColor';
+import { hexToHsv, hsvToHex } from '../../lib/colorMath';
 
-export default function AccentPickerModal({ onClose }) {
-  const { accentTheme, previewAccent, commitAccent } = useApp();
-  const [original] = useState(accentTheme);
-  const [hsv, setHsv] = useState(() => hexToHsv(accentTheme));
+const LABELS = { accent: 'Accent Color', bg: 'Background Color' };
+
+export default function ColorPickerModal({ target, onClose }) {
+  const { accentTheme, previewAccent, commitAccent, bgTheme, previewBg, commitBg } = useApp();
+  const isBg = target === 'bg';
+  const current = isBg ? bgTheme : accentTheme;
+  const preview = isBg ? previewBg : previewAccent;
+  const commit = isBg ? commitBg : commitAccent;
+
+  const [original] = useState(current);
+  const [hsv, setHsv] = useState(() => hexToHsv(current));
 
   const apply = (next) => {
     setHsv(next);
-    previewAccent(hsvToHex(next.h, next.s, next.v));
+    preview(hsvToHex(next.h, next.s, next.v));
   };
 
   const handleSave = async () => {
-    await commitAccent(hsvToHex(hsv.h, hsv.s, hsv.v));
+    await commit(hsvToHex(hsv.h, hsv.s, hsv.v));
     onClose();
   };
 
   const handleCancel = () => {
-    previewAccent(original);
+    preview(original);
     onClose();
   };
 
@@ -38,7 +45,7 @@ export default function AccentPickerModal({ onClose }) {
         <span style={{
           fontFamily: 'IBM Plex Mono, monospace', fontSize: 11,
           letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-dim)',
-        }}>Accent Color</span>
+        }}>{LABELS[target]}</span>
 
         <ColorWheel hue={hsv.h} sat={hsv.s} val={hsv.v} onChange={apply}/>
 
@@ -53,4 +60,4 @@ export default function AccentPickerModal({ onClose }) {
       </div>
     </div>
   );
-}
+            }
