@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { openWatchLink } from '../lib/streamingLinks';
 import { event as gaEvent } from '../lib/gtag';
 import usePremium from '../lib/usePremium';
-import { useAccentTheme } from '../lib/accentColor';
+import { useCustomTheme } from '../lib/useCustomTheme';
 
 const AppContext = createContext(null);
 
@@ -15,10 +15,10 @@ export function AppProvider({ children }) {
   const [reminder, setReminder] = useState(null);
   const [watchClicks, setWatchClicks] = useState(0);
   const [showUpsell, setShowUpsell] = useState(false);
-  const [showAccentPicker, setShowAccentPicker] = useState(false);
+  const [colorPickerTarget, setColorPickerTarget] = useState(null); // null | 'accent' | 'bg'
 
   const { isPremium, refresh: refreshPremium, startCheckout, checkoutError, startingCheckout } = usePremium(session);
-  const { accentTheme, previewAccent, commitAccent } = useAccentTheme(session);
+  const { accentTheme, previewAccent, commitAccent, bgTheme, previewBg, commitBg } = useCustomTheme(session);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -69,10 +69,11 @@ export function AppProvider({ children }) {
     <AppContext.Provider value={{
       isGuest, isPremium, refreshPremium,
       accentTheme, previewAccent, commitAccent,
+      bgTheme, previewBg, commitBg,
       showLoginPrompt, setShowLoginPrompt,
       reminder, setReminder,
       showUpsell, setShowUpsell,
-      showAccentPicker, setShowAccentPicker,
+      colorPickerTarget, setColorPickerTarget,
       checkoutError, startingCheckout,
       handleSignIn, handleGuestGate, handleWatchClick, handleUpgrade,
     }}>
