@@ -8,7 +8,7 @@ import { pageview } from '../lib/gtag';
 import LoginPromptModal from '../components/auth/LoginPromptModal';
 import ReminderToast from '../components/auth/ReminderToast';
 import UpsellPopup from '../components/auth/UpsellPopup';
-import AccentPickerModal from '../components/settings/AccentPickerModal';
+import ColorPickerModal from '../components/settings/ColorPickerModal';
 import { useApp } from '../context/AppContext';
 
 function Modals() {
@@ -16,7 +16,7 @@ function Modals() {
     showLoginPrompt, setShowLoginPrompt,
     reminder, setReminder,
     showUpsell, setShowUpsell,
-    showAccentPicker, setShowAccentPicker,
+    colorPickerTarget, setColorPickerTarget,
     handleSignIn, handleUpgrade,
   } = useApp();
   return (
@@ -26,7 +26,7 @@ function Modals() {
         <ReminderToast message={reminder} onClose={() => setReminder(null)} onSignIn={() => { setReminder(null); setShowLoginPrompt(true); }}/>
       )}
       {showUpsell && <UpsellPopup onClose={() => setShowUpsell(false)} onUpgrade={handleUpgrade}/>}
-      {showAccentPicker && <AccentPickerModal onClose={() => setShowAccentPicker(false)}/>}
+      {colorPickerTarget && <ColorPickerModal target={colorPickerTarget} onClose={() => setColorPickerTarget(null)}/>}
     </>
   );
 }
