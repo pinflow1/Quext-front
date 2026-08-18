@@ -6,11 +6,15 @@ import SettingsToggleRow from './SettingsToggleRow';
 import AccountRow from './AccountRow';
 import SupportRow from './SupportRow';
 import LogOutButton from './LogOutButton';
-import AccentThemePicker from './AccentThemePicker';
+import ThemeColorRow from './ThemeColorRow';
+import { useApp } from '../../context/AppContext';
+import { DEFAULT_BG } from '../../lib/useCustomTheme';
 
 export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
+  const { bgTheme } = useApp();
   const [alerts, setAlerts] = useState(false);
   const [forceDark, setForceDark] = useState(false);
+  const isDefaultBg = bgTheme === DEFAULT_BG;
 
   useEffect(() => {
     const saved = localStorage.getItem('quext-force-dark') === 'true';
@@ -41,8 +45,15 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
       <SettingsRow label="General Settings" onClick={() => {}}/>
 
       <SettingsGroupLabel>Preferences</SettingsGroupLabel>
-      <SettingsToggleRow label="Force Dark Mode" checked={forceDark} onChange={handleForceDark}/>
-      <AccentThemePicker/>
+      {isDefaultBg ? (
+        <SettingsToggleRow label="Force Dark Mode" checked={forceDark} onChange={handleForceDark}/>
+      ) : (
+        <div style={{ padding: '14px 20px', fontSize: 13, color: 'var(--text-dim)' }}>
+          Force Dark Mode is off while a custom background is active
+        </div>
+      )}
+      <ThemeColorRow label="Accent Color" target="accent"/>
+      <ThemeColorRow label="Background Color" target="bg"/>
       <SettingsRow label="Language" onClick={() => {}}/>
 
       <SettingsGroupLabel>Support</SettingsGroupLabel>
