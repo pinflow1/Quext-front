@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { PAD } from '../../lib/theme';
 import { SOURCE_COLOR, timeAgo } from '../../lib/newsData';
 
@@ -5,7 +6,18 @@ export default function NewsCard({ article }) {
   const color = SOURCE_COLOR[article.sourceKey] || 'var(--text-dim)';
 
   return (
-    <a href={article.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration:'none' }}>
+    <Link href={{
+      pathname: '/news/article',
+      query: {
+        title: article.title,
+        image: article.image || '',
+        summary: (article.summary || '').slice(0, 150),
+        source: article.source,
+        sourceKey: article.sourceKey,
+        publishedAt: article.publishedAt || '',
+        link: article.link,
+      },
+    }} style={{ textDecoration:'none' }}>
       <div style={{ display:'flex', gap:14, padding:`16px ${PAD}`, borderTop:'1px solid var(--hairline)', cursor:'pointer' }}
         onMouseEnter={e => e.currentTarget.style.background='var(--surface-hover)'}
         onMouseLeave={e => e.currentTarget.style.background='transparent'}>
@@ -29,7 +41,6 @@ export default function NewsCard({ article }) {
           </p>
         </div>
       </div>
-    </a>
+    </Link>
   );
-                    }
-          
+}
