@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import HeroCarousel from '../components/discover/HeroCarousel';
 import RankedList from '../components/discover/RankedList';
 import SponsoredRow from '../components/discover/SponsoredRow';
-import HiddenGems from '../components/discover/HiddenGems';
+import TopNews from '../components/discover/TopNews';
 import EpisodeHeatmap from '../components/discover/EpisodeHeatmap';
 import ReleaseTimeline from '../components/discover/ReleaseTimeline';
 import TrendingChart from '../components/discover/TrendingChart';
@@ -54,7 +54,7 @@ export default function Discover() {
 
       <RankedList items={topRated} isLive={topRated.length > 0}/>
       {!isPremium && <SponsoredRow onWatchClick={handleWatchClick}/>}
-      <HiddenGems/>
+      <TopNews/>
       <EpisodeHeatmap/>
       <ReleaseTimeline items={newSeasons} isLive={newSeasons.length > 0}/>
       <TrendingChart items={trending} isLive={trending.length > 0}/>
