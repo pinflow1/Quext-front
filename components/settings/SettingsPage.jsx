@@ -58,7 +58,7 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
 
       <SettingsGroupLabel>Support</SettingsGroupLabel>
       <SupportRow/>
-      <SettingsRow label="FAQ" onClick={() => {}}/>
+      <SettingsRow label="FAQ" onClick={() => router.push('/faq')}/>
       <SettingsRow label="Terms of Service" onClick={() => router.push('/terms')}/>
       <SettingsRow label="Privacy Policy" onClick={() => router.push('/privacy')}/>
 
