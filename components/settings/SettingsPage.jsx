@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import SettingsHeader from './SettingsHeader';
 import SettingsGroupLabel from './SettingsGroupLabel';
 import SettingsRow from './SettingsRow';
@@ -11,6 +12,7 @@ import { useApp } from '../../context/AppContext';
 import { DEFAULT_BG } from '../../lib/useCustomTheme';
 
 export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
+  const router = useRouter();
   const { bgTheme } = useApp();
   const [alerts, setAlerts] = useState(false);
   const [forceDark, setForceDark] = useState(false);
@@ -42,7 +44,6 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
 
       <SettingsGroupLabel>Notifications</SettingsGroupLabel>
       <SettingsToggleRow label="Episode Alerts" checked={alerts} onChange={handleAlertsToggle}/>
-      <SettingsRow label="General Settings" onClick={() => {}}/>
 
       <SettingsGroupLabel>Preferences</SettingsGroupLabel>
       {isDefaultBg ? (
@@ -54,13 +55,12 @@ export default function SettingsPage({ onBack, isGuest, onGuestGate }) {
       )}
       <ThemeColorRow label="Accent Color" target="accent"/>
       <ThemeColorRow label="Background Color" target="bg"/>
-      <SettingsRow label="Language" onClick={() => {}}/>
 
       <SettingsGroupLabel>Support</SettingsGroupLabel>
       <SupportRow/>
       <SettingsRow label="FAQ" onClick={() => {}}/>
-      <SettingsRow label="Terms of Service" onClick={() => {}}/>
-      <SettingsRow label="Privacy Policy" onClick={() => {}}/>
+      <SettingsRow label="Terms of Service" onClick={() => router.push('/terms')}/>
+      <SettingsRow label="Privacy Policy" onClick={() => router.push('/privacy')}/>
 
       {!isGuest && <LogOutButton/>}
     </div>
