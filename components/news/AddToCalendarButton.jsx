@@ -46,13 +46,16 @@ export default function AddToCalendarButton({ title }) {
 
   if (!picking) {
     return (
-      <button onClick={handleOpen} style={{
-        border:'1px solid var(--hairline)', borderRadius:50, padding:'12px 20px',
-        background:'transparent', color:'var(--text)',
-        fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:13, cursor:'pointer',
-      }}>
-        Add to Calendar
-      </button>
+      <div>
+        <button onClick={handleOpen} style={{
+          border:'1px solid var(--hairline)', borderRadius:50, padding:'12px 20px',
+          background:'transparent', color:'var(--text)',
+          fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:13, cursor:'pointer',
+        }}>
+          Add to Calendar
+        </button>
+        {status && <div style={{ fontSize:12, color:'var(--red)', marginTop:8, fontFamily:'Inter,sans-serif' }}>{status}</div>}
+      </div>
     );
   }
 
@@ -72,4 +75,4 @@ export default function AddToCalendarButton({ title }) {
       {status && !['saving','success'].includes(status) && <span style={{ fontSize:12, color:'var(--red)' }}>{status}</span>}
     </div>
   );
-        }
+}
