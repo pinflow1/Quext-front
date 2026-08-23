@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { title, day, month, year, providerToken } = req.body;
+  const { title, day, month, year, providerToken, summary, description } = req.body;
 
   if (!title || !day || month === undefined || !year) {
     return res.status(400).json({ error: 'title, day, month, year are required' });
@@ -23,8 +23,8 @@ export default async function handler(req, res) {
     const nextDay = new Date(Date.UTC(year, month, day + 1)).toISOString().slice(0,10);
 
     const event = {
-      summary: `${title} — New Episode`,
-      description: 'Added via Quext',
+      summary: summary || `${title} — New Episode`,
+      description: description || 'Added via Quext',
       start: { date: dateStr },
       end:   { date: nextDay },
     };
