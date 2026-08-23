@@ -53,4 +53,4 @@ export default function CalendarNewsList({ month, year }) {
       </div>
     </>
   );
-                }
+}
