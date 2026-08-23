@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import PageHeader from '../components/ui/PageHeader';
 import CalendarGrid from '../components/calendar/CalendarGrid';
 import CalendarUpcomingList from '../components/calendar/CalendarUpcomingList';
+import CalendarNewsList from '../components/calendar/CalendarNewsList';
 import CalendarEventModal from '../components/calendar/CalendarEventModal';
 import SyncButton from '../components/calendar/SyncButton';
 import { buildCellsForMonth } from '../lib/calendarData';
@@ -35,7 +36,6 @@ export default function Calendar() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Build day → event map for this month only
   const eventsByDay = events
     .filter(e => e.month === month && e.year === year)
     .reduce((acc, e) => { acc[e.day] = e; return acc; }, {});
@@ -126,9 +126,10 @@ export default function Calendar() {
         <>
           <CalendarGrid cells={cells} events={eventsByDay} today={today} onSelectDay={(d) => { setSelected(d); setSyncResult(null); }}/>
           <CalendarUpcomingList events={eventsByDay} monthLabel={monthLabel} onSelect={(d) => { setSelected(d); setSyncResult(null); }}/>
+          <CalendarNewsList month={month} year={year}/>
         </>
       )}
       <CalendarEventModal event={selected} monthLabel={monthLabel} syncing={syncing} syncResult={syncResult} onClose={() => setSelected(null)} onAddToCalendar={handleAddToCalendar}/>
     </Layout>
   );
-            }
+}
