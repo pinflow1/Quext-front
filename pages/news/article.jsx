@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import AboutAnime from '../../components/news/AboutAnime';
 import ShareArticleButton from '../../components/news/ShareArticleButton';
+import AddToCalendarButton from '../../components/news/AddToCalendarButton';
 import ImageLightbox from '../../components/ui/ImageLightbox';
 import { PAD } from '../../lib/theme';
 import { SOURCE_COLOR, timeAgo } from '../../lib/newsData';
@@ -53,7 +54,7 @@ export default function NewsArticle() {
         <p style={{ fontFamily:'Inter,sans-serif', fontSize:15, color:'var(--text-70)', lineHeight:1.6, margin:'0 0 24px' }}>
           {summary}
         </p>
-        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+        <div style={{ display:'flex', gap:10, flexWrap:'wrap', marginBottom:14 }}>
           <a href={link} target="_blank" rel="noopener noreferrer" style={{
             display:'inline-block', padding:'12px 20px', borderRadius:50,
             background:'#fff', border:'1px solid var(--orange)', color:'var(--orange)',
@@ -63,6 +64,7 @@ export default function NewsArticle() {
           </a>
           <ShareArticleButton title={title}/>
         </div>
+        <AddToCalendarButton title={title}/>
       </div>
 
       <AboutAnime anime={topAnime}/>
