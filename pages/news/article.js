@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
+import AboutAnime from '../../components/news/AboutAnime';
+import ShareArticleButton from '../../components/news/ShareArticleButton';
+import ImageLightbox from '../../components/ui/ImageLightbox';
 import { PAD } from '../../lib/theme';
 import { SOURCE_COLOR, timeAgo } from '../../lib/newsData';
 
@@ -9,14 +12,25 @@ export default function NewsArticle() {
   const { title, image, summary, source, sourceKey, publishedAt, link } = router.query;
   const [related, setRelated] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
+  const [topAnime, setTopAnime] = useState(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     if (!title) return;
     fetch(`/api/anime/search?q=${encodeURIComponent(title)}&limit=8`)
       .then(r => r.json())
-      .then(d => setRelated(d.results || []))
-      .catch(() => {})
-      .finally(() => setLoadingRelated(false));
+      .then(d => {
+        const results = d.results || [];
+        setRelated(results);
+        setLoadingRelated(false);
+        if (results[0]) {
+          fetch(`/api/anime/${results[0].mal_id}`)
+            .then(r => r.json())
+            .then(d2 => setTopAnime(d2.anime || null))
+            .catch(() => {});
+        }
+      })
+      .catch(() => setLoadingRelated(false));
   }, [title]);
 
   if (!router.isReady || !title) return null;
@@ -24,7 +38,9 @@ export default function NewsArticle() {
 
   return (
     <Layout>
-      {image && <img src={image} alt="" style={{ width:'100%', aspectRatio:'16/9', objectFit:'cover' }}/>}
+      {image && (
+        <img src={image} alt="" onClick={() => setLightboxOpen(true)} style={{ width:'100%', aspectRatio:'16/9', objectFit:'cover', cursor:'zoom-in' }}/>
+      )}
 
       <div style={{ padding:`24px ${PAD}` }}>
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
@@ -37,14 +53,19 @@ export default function NewsArticle() {
         <p style={{ fontFamily:'Inter,sans-serif', fontSize:15, color:'var(--text-70)', lineHeight:1.6, margin:'0 0 24px' }}>
           {summary}
         </p>
-        <a href={link} target="_blank" rel="noopener noreferrer" style={{
-          display:'inline-block', padding:'12px 20px', borderRadius:10,
-          background:'#fff', border:'1px solid var(--orange)', color:'var(--orange)',
-          fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:13, textDecoration:'none',
-        }}>
-          Read Full Story on {source}
-        </a>
+        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+          <a href={link} target="_blank" rel="noopener noreferrer" style={{
+            display:'inline-block', padding:'12px 20px', borderRadius:50,
+            background:'#fff', border:'1px solid var(--orange)', color:'var(--orange)',
+            fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:13, textDecoration:'none',
+          }}>
+            Read Full Story on {source}
+          </a>
+          <ShareArticleButton title={title}/>
+        </div>
       </div>
+
+      <AboutAnime anime={topAnime}/>
 
       {(loadingRelated || related.length > 0) && (
         <div style={{ padding:'8px 0 32px' }}>
@@ -72,6 +93,8 @@ export default function NewsArticle() {
           </div>
         </div>
       )}
+
+      {lightboxOpen && <ImageLightbox src={image} onClose={() => setLightboxOpen(false)}/>}
     </Layout>
   );
 }
