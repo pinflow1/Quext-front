@@ -39,9 +39,21 @@ export default function NewsArticle() {
 
   return (
     <Layout>
-      {image && (
-        <img src={image} alt="" onClick={() => setLightboxOpen(true)} style={{ width:'100%', aspectRatio:'16/9', objectFit:'cover', cursor:'zoom-in' }}/>
-      )}
+      <div style={{ position:'relative', minHeight: image ? undefined : 60 }}>
+        <button onClick={() => router.back()} aria-label="Back" style={{
+          position:'absolute', top:16, left:16, zIndex:10,
+          width:36, height:36, borderRadius:'50%',
+          background:'rgba(0,0,0,0.5)', border:'none', color:'#fff',
+          display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
+        }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width:18, height:18 }}>
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        {image && (
+          <img src={image} alt="" onClick={() => setLightboxOpen(true)} style={{ width:'100%', aspectRatio:'16/9', objectFit:'cover', cursor:'zoom-in' }}/>
+        )}
+      </div>
 
       <div style={{ padding:`24px ${PAD}` }}>
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
@@ -99,4 +111,4 @@ export default function NewsArticle() {
       {lightboxOpen && <ImageLightbox src={image} onClose={() => setLightboxOpen(false)}/>}
     </Layout>
   );
-}
+      }
